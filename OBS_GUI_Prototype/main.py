@@ -149,7 +149,7 @@ class OBSCloneWindow(QMainWindow):
             pass
 
         try:
-            # 搜索捕获卡/图像设备 (Capture cards usually fall into Image class)
+            # 搜索捕获卡/图像设备
             out_image = subprocess.check_output(
                 ['powershell', '-Command', 'Get-PnpDevice -Class Image -Status OK | Select-Object -ExpandProperty FriendlyName'],
                 stderr=subprocess.STDOUT
@@ -216,7 +216,7 @@ class OBSCloneWindow(QMainWindow):
             frame = self.video_thread.get_current_frame()
             if frame is not None:
                 timestamp = int(time.time() * 1000)
-                filename = f"capture_{timestamp}.png"
+                filename = f"./capture/capture_{timestamp}.png"
                 cv2.imwrite(filename, frame)
                 self.update_status(f"截图成功: {filename}")
                 return
