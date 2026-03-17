@@ -60,7 +60,7 @@ class VideoCaptureThread(QThread):
 class OBSCloneWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("OBS 视频采集卡抓取工具 - 旗舰版")
+        self.setWindowTitle("视频采集卡抓取工具 - 旗舰版")
         self.resize(1024, 768)
 
         # 获取系统中真实的视频捕获设备列表
@@ -109,10 +109,10 @@ class OBSCloneWindow(QMainWindow):
         self.control_layout.addWidget(self.device_group)
 
         # 2. 截图设置
-        self.capture_group = QGroupBox("截图控制 (按 V 键)")
+        self.capture_group = QGroupBox("截图控制 (按 F12 键)")
         capture_layout = QVBoxLayout()
         
-        self.screenshot_btn = QPushButton("手动截图 [或按 V]")
+        self.screenshot_btn = QPushButton("手动截图 [或按 F12]")
         self.screenshot_btn.setMinimumHeight(50)
         self.screenshot_btn.setStyleSheet("background-color: #2b78e4; color: white; font-weight: bold;")
         self.screenshot_btn.clicked.connect(self.take_screenshot)
@@ -160,9 +160,9 @@ class OBSCloneWindow(QMainWindow):
         except Exception:
             pass
             
-        # 如果以上底层查询都失败了或者没查到，为了让 UI 能点击，还是给出默认的 0 和 1 两个通道以做备用
+        # 如果以上底层查询都失败了或者没查到，就显示未检测到设备
         if not devices:
-            devices = ["默认主摄像头 (索引0)", "未知扩展采集卡 (索引1)"]
+            devices = ["未检测到设备"]
             
         return devices
 
@@ -204,9 +204,9 @@ class OBSCloneWindow(QMainWindow):
     def update_status(self, msg):
         self.status_label.setText(f"状态: {msg}")
 
-    # 重写全局按键按下事件以捕获 'V' 键
+    # 重写全局按键按下事件以捕获 'F12' 键
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key.Key_V:
+        if event.key() == Qt.Key.Key_F12:
             self.take_screenshot()
         else:
             super().keyPressEvent(event)
@@ -216,7 +216,7 @@ class OBSCloneWindow(QMainWindow):
             frame = self.video_thread.get_current_frame()
             if frame is not None:
                 timestamp = int(time.time() * 1000)
-                filename = f"./capture/capture_{timestamp}.png"
+                filename = f"../capture/capture_{timestamp}.png"
                 cv2.imwrite(filename, frame)
                 self.update_status(f"截图成功: {filename}")
                 return
